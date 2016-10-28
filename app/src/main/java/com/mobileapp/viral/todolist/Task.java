@@ -3,7 +3,8 @@ package com.mobileapp.viral.todolist;
 import java.io.Serializable;
 
 /**
- * Created by viral on 10/3/16.
+ * Class for task object, which has a title and description, both as String variables,
+ * and corresponding getter methods.
  */
 
 public class Task implements Serializable {

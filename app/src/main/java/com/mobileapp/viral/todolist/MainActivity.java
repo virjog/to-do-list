@@ -16,10 +16,8 @@ import com.mobileapp.viral.todolist.TaskAdapter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -35,27 +33,33 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //for centering the action bar title
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.actionbar);
 
-        tasks = new ArrayList<Task>();
+        restoreTasks();
+
         taskList = (ListView) findViewById(R.id.mainListView);
         adapter = new TaskAdapter(this, tasks);
         taskList.setAdapter(adapter);
 
-        restoreTasks();
-
+        //Event listener to handle deletion of tasks from list
         taskList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> arg0, View v, int position, long id) {
                 tasks.remove(position);
                 adapter.notifyDataSetChanged();
+                saveTasks(v);
                 return true;
             }
         });
-
     }
 
+    /**
+     * Method to add a Task object to the ArrayList, update the ListView, and save the contents
+     * of the ArrayList to a file.
+     * @param view
+     */
     public void onAddTask(View view) {
         newTaskTitle = (EditText) findViewById(R.id.titleTextInput);
         newTaskDescription = (EditText) findViewById(R.id.descriptionTextInput);
@@ -70,13 +74,17 @@ public class MainActivity extends AppCompatActivity {
         newTaskDescription.setText("");
     }
 
+    /**
+     * Method to save tasks from ArrayList to a file named "tasks.txt"
+     * @param view
+     */
     public void saveTasks(View view) {
-        String fileName = "listOfTasks.txt";
+        String fileName = "tasks.txt";
         try {
-            FileOutputStream fos = openFileOutput(fileName, Context.MODE_PRIVATE);
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(tasks);
-            oos.close();
+            FileOutputStream fileOutputStream = openFileOutput(fileName, Context.MODE_PRIVATE);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(tasks);
+            objectOutputStream.close();
 
             Toast.makeText(getBaseContext(), "Tasks saved successfully!", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
@@ -84,39 +92,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Method to restore tasks to ArrayList from a file named "tasks.txt"
+     */
     public void restoreTasks() {
-        String fileName = "listOfTasks.txt";
+        String fileName = "tasks.txt";
         try {
-            FileInputStream fis = getApplicationContext().openFileInput(fileName);
-            ObjectInputStream ois = new ObjectInputStream(fis);
-            tasks = (ArrayList<Task>) ois.readObject();
-            ois.close();
-
-            Toast.makeText(getBaseContext(), "Tasks restored successfully!", Toast.LENGTH_SHORT).show();
+            FileInputStream fileInputStream = getApplicationContext().openFileInput(fileName);
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            tasks = (ArrayList<Task>) objectInputStream.readObject();
+            objectInputStream.close();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

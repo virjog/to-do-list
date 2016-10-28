@@ -12,7 +12,7 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 
 /**
- * Created by viral on 10/3/16.
+ * Custom TaskAdapter to handle display of Task objects.
  */
 
 public class TaskAdapter extends ArrayAdapter<Task> {
@@ -45,27 +45,3 @@ public class TaskAdapter extends ArrayAdapter<Task> {
         return convertView;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
